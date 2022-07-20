@@ -12,7 +12,7 @@
 
   # kernel
   #boot.kernelPackages = pkgs.linuxPackages_5_18;
-  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -25,19 +25,19 @@
   boot.loader.grub.useOSProber = true;
   boot.loader.grub.extraEntries = ''
   	# GRUB 1 example (not GRUB 2 compatible)
-  	title Windows
-  	  chainloader (hd0,1)+1
+  	#title Windows
+  	 # chainloader (hd0,1)+1
   
   	# GRUB 2 example
-  	menuentry "Windows 7" {
-  	  chainloader (hd0,4)+1
-  	}
+  	#menuentry "Windows 7" {
+  	  #chainloader (hd0,4)+1
+  	#}
   
   	# GRUB 2 with UEFI example, chainloading another distro
-  	menuentry "Fedora" {
-  	  set root=(hd1,1)
-  	  chainloader /efi/fedora/grubx64.efi
-  	}
+  	#menuentry "Fedora" {
+  	  #set root=(hd1,1)
+  	  #chainloader /efi/fedora/grubx64.efi
+  	#}
   '';
   boot.supportedFilesystems = 
 	[
@@ -99,6 +99,7 @@
   # Fix for some Java AWT applications (e.g. Android Studio),
   # use this if they aren't displayed properly:
   export _JAVA_AWT_WM_NONREPARENTING=1
+  export XCURSOR_THEME=Numix-Cursor
 '';
  programs.sway.wrapperFeatures.gtk = true;
 
@@ -156,6 +157,8 @@
 	pop-gtk-theme
 	pavucontrol
 	networkmanagerapplet
+	glib
+	numix-cursor-theme
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
