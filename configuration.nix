@@ -46,27 +46,27 @@ in
     		"margin-bottom": 0,
     		"mode": "dock",
     		"exclusive": true,
-		"ipc": true,
+		    "ipc": true,
 		
     		"modules-left":[ "custom/launcher" ],
     		"modules-right":[ "custom/exit" ],
 
-		"custom/launcher":{
+		    "custom/launcher":{
 		        "format": "   Reboot ↻",
 		        "on-click": "systemctl reboot"
-		},
-		"custom/exit":{
-			"format": " ⏻ Shutdown    ",
-		        "on-click": "systemctl poweroff"
-		}
-		}
+	    	},
+	    	"custom/exit":{
+		    	"format": " ⏻ Shutdown    ",
+		      "on-click": "systemctl poweroff"
+		    }
+		 }
 	 '';
 
 	#available DE
 	environment.etc."greetd/environments".text = ''
-	    	sway
-	    	bash
-	 '';
+sway
+bash
+'';
 
 	#CSS for gtkgreet DM
 	environment.etc."greetd/gtkgreet.css".text = ''
@@ -84,7 +84,44 @@ in
 		   	padding: 50px;
 		}
  	'';
-	
+	#sway config
+	environment.etc."sway/config".text = ''
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term lxterminal
+set $menu rofi -show drun
+include /etc/sway/config-vars.d/*
+output * bg ${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/Nattu Adnan.jpg fill
+input * xkb_numlock enable
+seat seat0 xcursor_theme Numix-Cursor
+bindsym $mod+Return exec $term
+bindsym $mod+x kill
+bindsym $mod+m exec $menu
+bindsym Print exec grimshot save screen
+bindsym $mod+Print exec grimshot save area
+floating_modifier $mod normal
+bindsym $mod+r reload
+bindsym $mod+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+f fullscreen
+bindsym $mod+Alt+space floating toggle
+bar swaybar_command waybar
+set $gnome-schema org.gnome.desktop.interface
+exec_always {
+    gsettings set $gnome-schema gtk-theme 'Pop'
+    gsettings set $gnome-schema icon-theme 'Tango'
+    gsettings set $gnome-schema cursor-theme 'Numix-Cursor'
+}
+workspace_layout tabbed
+exec nm-applet --indicator
+exec swaymsg layout toggle float
+exec_always lxqt-policykit-agent &
+exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec hash dbus-update-activation-environment 2>/dev/null && \
+        dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+ 	'';
 
 	# allow non free packet
 	nixpkgs.config.allowUnfree = true;
@@ -125,22 +162,9 @@ in
   	boot.loader.grub.device = "/dev/sdb"; # or "nodev" for efi only
   	boot.loader.grub.useOSProber = true;
   	boot.loader.grub.extraEntries = ''
-		# replace --fs-uuid with your partition uuid
-		# boot menu for SLAX
-   		menuentry "slax" {
-   			search --set=slax --fs-uuid 6b16ff59-11ba-406a-bcf6-1ae032ed24c4
-   			linux ($slax)/slax/boot/vmlinuz vga=normal initrd=($slax)/slax/boot/initrfs.img load_ramdisk=1 prompt_ramdisk=0 rw printk.time=0 consoleblank=0 slax.flags=perch,automount   
-   			initrd ($slax)/slax/boot/initrfs.img
-  		}
-	
-		# boot menu for POSROG
-		#menuentry "Android" {
-		#	echo "Phoenix OS Republic Of Game"
-		#	insmod all_video
-		#	search --set=rog --fs-uuid 6b16ff59-11ba-406a-bcf6-1ae032ed24c4
-		#	linux ($rog)/posrog/kernel root=/dev/ram0 androidboot.selinux=permissive SRC= DATA= 
-		#	initrd ($rog)/posrog/initrd.img
-		#}
+##########################
+
+###########################
 	'';
   
   	# zram
@@ -173,11 +197,11 @@ in
   	# desktop environtment
   	programs.sway.enable = true;
   	programs.sway.extraPackages = with pkgs; [
-		waybar
-    		rofi-wayland  		
-		sway-contrib.grimshot
-		grim
-		slurp		
+		  waybar
+      rofi-wayland  		
+		  sway-contrib.grimshot
+		  grim
+		  slurp		
   	];
   	hardware.opengl.enable = true;
   	programs.sway.extraSessionCommands = ''
@@ -193,9 +217,8 @@ in
 		#export XDG_CURRENT_DESKTOP=Unity
   	'';
   	programs.sway.wrapperFeatures.gtk = true;
-	programs.waybar.enable = true;
-	programs.qt5ct.enable = true;
-
+  	programs.waybar.enable = true;
+	  qt5.platformTheme = "qt5ct";
   	# Enable CUPS to print documents.
   	services.printing.enable = true;
 
@@ -225,10 +248,10 @@ in
   	environment.systemPackages = with pkgs; [
 		chromium
 		xdg-utils
-    		wget
+    wget
 		curl
-    		htop
-    		lxtask
+    htop
+    lxtask
 		neofetch
 		libappindicator		
 		networkmanagerapplet
@@ -243,13 +266,19 @@ in
 		pavucontrol
 		lxqt.pcmanfm-qt
 		lxqt.lximage-qt
-   		lxde.lxmenu-data
+   	lxde.lxmenu-data
 		xarchiver
 		zip
 		unzip
 		vlc	
-		
+		lxqt.lxqt-policykit
+    lxqt.lxqt-admin
 		pantheon.elementary-wallpapers
+    libsForQt5.qt5ct
+    e2fsprogs   
+    gptfdisk
+    pv
+    vboot_reference
 	];
 
   	# Some programs need SUID wrappers, can be configured further or are
