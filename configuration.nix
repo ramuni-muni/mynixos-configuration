@@ -150,6 +150,7 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
 		"ntfs"
 		"fat32"
 		"fat16"
+		"exfat"
 	];
 
   	# Use the GRUB 2 boot loader.
@@ -166,7 +167,16 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
 
 ###########################
 	'';
-  
+  	
+	# video driver
+	services.xserver.videoDrivers = [
+    		# "amdgpu"
+    		# "radeon"
+    		# "nouveau"
+    		# "modesetting"
+    		"fbdev"
+  	];
+
   	# zram
   	zramSwap.enable = true;
 
